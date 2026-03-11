@@ -1,0 +1,57 @@
+name: lab1
+
+mgmt:
+  network: mgmt
+  ipv4-subnet: 172.16.100.0/24
+
+topology:
+  nodes:
+    R01:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.2
+      startup-config: ./lab1.R01.cfg
+
+    SW01:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.3
+      startup-config: ./lab1.SW01.cfg
+
+    SW02_1:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.4
+      startup-config: ./lab1.SW02_1.cfg
+
+    SW02_2:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.5
+      startup-config: ./lab1.SW02_2.cfg
+
+    PC1:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.6
+      exec:
+        - ip link set eth1 up
+        - udhcpc -i eth1 -n -q
+        - ip route del default
+        - ip route add default via 192.168.10.1 dev eth1
+    PC2:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.7
+      exec:
+        - ip link set eth1 up
+        - udhcpc -i eth1 -n -q
+        - ip route del default
+        - ip route add default via 192.168.20.1 dev eth1
+
+  links:
+    - endpoints: ["R01:ether2", "SW01:ether2"]
+    - endpoints: ["SW01:ether3", "SW02_1:ether2"]
+    - endpoints: ["SW01:ether4", "SW02_2:ether2"]
+    - endpoints: ["SW02_1:ether3", "PC1:eth1"]
+    - endpoints: ["SW02_2:ether3", "PC2:eth1"]
