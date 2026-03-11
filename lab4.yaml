@@ -1,0 +1,61 @@
+name: lab4
+mgmt:
+  network: mgmt
+  ipv4-subnet: 172.16.100.0/24
+topology:
+  nodes:
+    R01.NY:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.100
+    R01.LND:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.101
+    R01.HKI:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.102
+    R01.SPB:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.103
+    R01.LBN:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.104
+    R01.SVL:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.105
+    PC1:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.106
+      exec:
+        - echo "PC1" > /etc/hostname
+        - hostname -F /etc/hostname
+    PC2:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.107
+      exec:
+        - echo "PC2" > /etc/hostname
+        - hostname -F /etc/hostname
+    PC3:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.108
+      exec:
+        - echo "PC3" > /etc/hostname
+        - hostname -F /etc/hostname
+  links:
+    - endpoints: ["R01.NY:ether2", "R01.LND:ether2"]
+    - endpoints: ["R01.LND:ether3", "R01.HKI:ether2"]
+    - endpoints: ["R01.LND:ether4", "R01.LBN:ether2"]
+    - endpoints: ["R01.HKI:ether3", "R01.SPB:ether2"]
+    - endpoints: ["R01.HKI:ether4", "R01.LBN:ether3"]
+    - endpoints: ["R01.LBN:ether4", "R01.SVL:ether2"]
+    - endpoints: ["R01.NY:ether4", "PC2:eth1"]
+    - endpoints: ["R01.SPB:ether4", "PC1:eth1"]
+    - endpoints: ["R01.SVL:ether4", "PC3:eth1"]
