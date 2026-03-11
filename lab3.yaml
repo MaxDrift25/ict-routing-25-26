@@ -1,0 +1,63 @@
+name: lab3
+mgmt:
+  network: mgmt
+  ipv4-subnet: 172.16.100.0/24
+topology:
+  nodes:
+    R01.LND:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.20
+      startup-config: ./lab3.R01.LND.cfg      
+    R01.HKI:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.21
+      startup-config: ./lab3.R01.HKI.cfg 
+    R01.SPB:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.22
+      startup-config: ./lab3.R01.SPB.cfg 
+    R01.NY:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.23
+      startup-config: ./lab3.R01.NY.cfg 
+    R01.LBN:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.24
+      startup-config: ./lab3.R01.LBN.cfg 
+    R01.MSK:
+      kind: mikrotik_ros
+      image: vrnetlab/mikrotik_routeros:6.47.9
+      mgmt-ipv4: 172.16.100.25
+      startup-config: ./lab3.R01.MSK.cfg 
+
+    SGI-Prism:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.27
+      exec:
+        - echo "SGI-Prism" > /etc/hostname
+        - hostname -F /etc/hostname
+
+    PC1:
+      kind: linux
+      image: alpine:latest
+      mgmt-ipv4: 172.16.100.28
+      exec:
+        - echo "PC1" > /etc/hostname
+        - hostname -F /etc/hostname
+        
+  links:
+    - endpoints: ["R01.LND:ether2", "R01.HKI:ether2"]
+    - endpoints: ["R01.LND:ether3", "R01.NY:ether2"]
+    - endpoints: ["R01.HKI:ether3", "R01.SPB:ether2"]
+    - endpoints: ["R01.HKI:ether4", "R01.LBN:ether4"]
+    - endpoints: ["R01.SPB:ether3", "R01.MSK:ether2"]
+    - endpoints: ["R01.MSK:ether3", "R01.LBN:ether2"]
+    - endpoints: ["R01.LBN:ether3", "R01.NY:ether3"]
+    - endpoints: ["R01.NY:ether4", "SGI-Prism:eth1"]
+    - endpoints: ["R01.SPB:ether4", "PC1:eth1"]
